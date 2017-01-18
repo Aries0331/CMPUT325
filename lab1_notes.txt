@@ -1,0 +1,40 @@
+REPL environment
+R: read
+E: evaluate
+V: print
+L: loop
+
+() -> command
+case insensitive
+
+* (princ "I like lisp")
+I like lisp -- evaluation
+"I like lisp" -- print
+
+cons cells -> only two elements
+(1 2 3 4 5)
+(1.(2 3 4 5))
+(1.(2.(3 4 5 )))
+(1.(2.(3.(4 5))))
+(1.(2.(3.(4.(5)))))
+(1.(2.(3.(4.(5.())))))
+
+List functions:
+CONS // dot only appear between two elements(atom)
+  (cons 'chicken 'cat)
+
+  (CHICKEN . CAT
+
+  (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 'nil)))))
+
+  (1 2 3 4 5)
+CAR // get the first element of cons cell
+CDR // get the second element of cons cell
+CADR == CAR(CDR()) // can combine up to four levels
+
+IF conditions:
+(cond ((c1)(...))
+  ((c2)(...))
+  ...
+  (t (...))
+  )
