@@ -43,13 +43,24 @@ If Y is a member of X, returns T otherwise returns NIL.
 (defun mix1 (L2 L1)
   (if (or (NULL L1) (NULL L2)
     (append L1 L2))
-    (append list(car L1) (mix (cdr L1) L2))
+    (append (list(car L1)) (mix (cdr L1) L2))
   )
 )
 
 |#
 
 ;QUESTION 4
+
+(defun split (L)
+  (cond
+    ((atom (cdr L)) (list L))
+    ((NULL L) (list NIL NIL))
+    (t (list (append (list (car L) (car (split (cddr L)))))
+       (append (append (list (cadr L)) (cdr (split (cddr L)))))))
+  )
+)
+
+
 
 ;QUESTION 5
 
