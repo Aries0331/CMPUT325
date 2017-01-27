@@ -53,13 +53,12 @@ If Y is a member of X, returns T otherwise returns NIL.
 
 (defun split (L)
   (cond
-    ((atom (cdr L)) (list L))
+    ((NULL (cdr L)) (list L))
     ((NULL L) (list NIL NIL))
-    (t (list (append (list (car L) (car (split (cddr L)))))
-       (append (append (list (cadr L)) (cdr (split (cddr L)))))))
+    (t (list (cons (car L) (cadr (split (cdr L))))
+             (car (split (cdr L)))))
   )
 )
-
 
 
 ;QUESTION 5
