@@ -63,7 +63,8 @@ If Y is a member of X, returns T otherwise returns NIL.
 
 ;QUESTION 5
 
-#| 5.1
+#|
+5.1
 Let L1 and L2 be lists. Is it always true that (split (mix L2 L1)) returns the list (L1 L2)?
 If yes, give a proof. If no, describe exactly for which pairs of lists L1, L2 the result is different from (L1 L2).
 
@@ -72,9 +73,9 @@ Then, if we do split on that list, the result will not just return that list.
 
 For example, L1 = (), L2 = (1 2 3). mix(L2 L1) = (1 2 3), split(mix(L2 L1)) = ((1 3) (2))
 However, list(L1 L2) = (NIL (1 2 3))
-#|
 
-#| 5.2
+
+5.2
 Let L be a list. Is it always true that (mix (cadr (split L)) (car (split L))) returns L?
 If yes, give a proof. If no, describe exactly for which lists L the result is different from L.
 
@@ -85,9 +86,15 @@ Ans: The answer is yes.
 
 ;QUESTION 6
 
-(defun subsetsum S L
+(defun subsetsum (S L)
   (cond
-    ((NULL (cdr L)) L)
-    ()
+    ((or (NULL L) (< S 1)) NIL)
+    ((equal S (car L)) (list(car L)))
+    ((< S (car L)) (subsetsum S (cdr L)))
+    (t (if (NULL (subsetsum (- S (car L)) (cdr L)))
+           (subsetsum S (cdr L))
+           (cons (car L) (subsetsum (- S (car L)) (cdr L)))
+        )
+    )
   )
 )
