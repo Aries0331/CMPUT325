@@ -82,7 +82,12 @@ Ans: The answer is yes.
 
 |#
 
+
 ;QUESTION 6
+
 (defun subsetsum S L
-  
+  (cond
+    ((NULL (cdr L)) L)
+    ()
+  )
 )
