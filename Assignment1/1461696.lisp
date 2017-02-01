@@ -100,8 +100,8 @@ Test cases:
 
 (defun split (L)
   (cond
-    ((NULL (cdr L)) (list L))
-    ((NULL L) (list L L))
+    ((NULL L) '(NIL NIL))	
+    ((NULL (cdr L)) (list L NIL))
     (t (list (cons (car L) (cadr (split (cdr L))))
              (car (split (cdr L)))))
   )
