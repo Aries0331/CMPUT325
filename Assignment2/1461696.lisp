@@ -39,7 +39,7 @@
                 ; otherwise f is undefined; in this case,
                 ; E is returned as if it is quoted in lisp
                 ; .....
-
+                (t E)
                 )
 	      )
            )
