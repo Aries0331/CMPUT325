@@ -3,6 +3,8 @@
 ;Course: CMPUT 325 B1
 ;Assignment 2
 
+
+
 #|
 The main interpreter function
 |#
@@ -39,6 +41,7 @@ The main interpreter function
                 ;             (applicative order reduction) 
                 ; .....
 
+                ((isUD f P) (applyf arg (cdr (isUD f P)) NIL NIL P))
 
                 ; otherwise f is undefined; in this case,
                 ; E is returned as if it is quoted in lisp
@@ -49,6 +52,7 @@ The main interpreter function
            )
         )
   )
+
 
 
 #|
@@ -64,6 +68,23 @@ Example:
 		(t (+ 1 (countArg (cdr L))))
 	)
 )
+
+
+
+#|
+the function countNum counts the number of elements in the input list L
+Example:
+(countNum '(a b c)) -> 3
+(countNum '(a)) -> 1
+|#
+(defun countNum (L)
+	(if (NULL L)
+		0
+		(+ 1 (countNum (cdr L)))
+	)
+)
+
+
 
 #|
 the function getIndex takes into two arguments, a list and one of the element in the list
@@ -82,6 +103,8 @@ Example:
 	)
 )
 
+
+
 #|
 the function getElement takes into two arguments, a list and an index
 returns an element which is at the position of index+1
@@ -99,12 +122,25 @@ Example:
 	)
 )
 
+
+
 #|
 the function bind map the value to the variables respectively
 Example:
-
+(bind '(a b) '(+ a b) '(1 2)) -> (+ 1 2)
+(bind nil '(= 1 1) nil) -> (= 1 1)
 |#
-(defun bind )
+(defun bind (n exp v)
+	(cond
+		((NULL exp) exp)
+		((and (atom (car exp)) (> (countNum n) (getIndex n (car exp))))
+			(cons (getElement v (getIndex n (car exp))) (bind n (cdr exp) v)))
+		((atom (car exp)) (cons (car exp) (bind n (cdr exp) v)))
+		(t (cons (bind n (car exp) v) (bind n (cdr exp) v)))
+	)
+)
+
+
 
 #|
 the function isUD checks if the function is user defined or not
@@ -124,9 +160,14 @@ Example:
 
 
 
-
-
-
+#|
+|#
+(defun applyf (arg f e2 e3 P)
+	(if (eq '= (car f))
+		(fl-interp (bind e3 (cadr f) e2) P)
+		(t (applyf (cdr arg) (cdr P) (append e2 (cons (fl-interp (car arg) P) NIL)) (append e3 (cons (car f) NIL)) P))
+	)
+)
 
 
 
