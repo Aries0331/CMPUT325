@@ -52,7 +52,7 @@ The main interpreter function
 
 
 #|
-Get the number of parameters in the function
+the function countArg get the number of parameters in the function
 Example: 
 (countArg '(f x = (+ x 2))) -> 1
 (countArg '(f x y = (+ x y))) -> 2
@@ -66,7 +66,7 @@ Example:
 )
 
 #|
-the function takes into two arguments, a list and one of the element in the list
+the function getIndex takes into two arguments, a list and one of the element in the list
 return the index of given element in the list
 the index is range from 0 to len(list)-1
 --Assume the element must be one of the elements in the list L
@@ -83,7 +83,7 @@ Example:
 )
 
 #|
-the function takes into two arguments, a list and an index
+the function getElement takes into two arguments, a list and an index
 returns an element which is at the position of index+1
 since the index is range from 0 to len(L)-1
 --Assume the index n is always valid
@@ -98,3 +98,42 @@ Example:
 		(t (getElement (cdr L) (- n 1)))
 	)
 )
+
+#|
+the function bind map the value to the variables respectively
+Example:
+
+|#
+(defun bind )
+
+#|
+the function isUD checks if the function is user defined or not
+if it is user defined, return the function body
+else, it returns NIL
+Example:
+(isUD '(add 1 2) '((add x y = (+ x y)))) -> (+ x y)
+(isUD '(add 1) '((add x y = (+ x y)))) -> nil
+|#
+(defun isUD (f UD)
+	(cond
+		((NULL UD) NIL)
+		((and (eq (car f) (caar UD)) (eq (countArg f) (countArg (car UD)))) (car UD))
+		(t (isUD f (cdr UD)))
+	)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
