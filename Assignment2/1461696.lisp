@@ -20,10 +20,10 @@ The main interpreter function
                 ((eq f 'atom)  (atom (fl-interp (car arg) P)))
                 ((eq f 'eq)  (eq (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
                 ((eq f 'first)  (car (fl-interp (car arg) P)))
-                ((eq) f 'rest)  (cdr (fl-interp (car arg) P)) 
+                ((eq f 'rest)  (cdr (fl-interp (car arg) P))) 
 	        	((eq f 'cons)  (cons (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f 'equal)  (equal (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
-	        	((eq f 'isnumber)  (isnumber (fl-interp (car arg) P)))
+	        	((eq f 'number)  (numberp (fl-interp (car arg) P)))
 	        	((eq f '+)  (+ (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f '-)  (- (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f '*)  (* (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
@@ -32,7 +32,7 @@ The main interpreter function
 	        	((eq f '=)  (if (= (fl-interp (car arg) P) (fl-interp (cadr arg) P)) T nil))
 	        	((eq f 'and)  (if (and (fl-interp (car arg) P) (fl-interp (cadr arg) P)) T nil))
 	        	((eq f 'or)  (if (or (fl-interp (car arg) P) (fl-interp (cadr arg) P)) T nil))
-	        	((eq f 'not)  (if (not (fl-interp (car arg) P) (cadr (cadr arg) P)) T nil))
+	        	((eq f 'not)  (if (not (fl-interp (car arg) P)) T nil))
 	        	; .....
 
 	            ; if f is a user-defined function,
@@ -162,14 +162,12 @@ Example:
 
 #|
 |#
-(defun applyf (arg f e2 e3 P)
+(defun applyf (arg f l1 l2 P)
 	(if (eq '= (car f))
-		(fl-interp (bind e3 (cadr f) e2) P)
-		(t (applyf (cdr arg) (cdr P) (append e2 (cons (fl-interp (car arg) P) NIL)) (append e3 (cons (car f) NIL)) P))
+		(fl-interp (bind l2 (cadr f) l1) P)
+		(applyf (cdr arg) (cdr P) (append l1 (cons (fl-interp (car arg) P) NIL)) (append l2 (cons (car f) NIL)) P)
 	)
 )
-
-
 
 
 
