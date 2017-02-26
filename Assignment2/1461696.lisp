@@ -90,8 +90,10 @@ Example:
 |#
 (defun subs (var exp val)
 	(cond
+		;((and (not (null var)) (atom val)) val)
 		((NULL exp) exp)
-		((atom exp) exp)
+		((and (atom exp) (null var)) exp)
+		((atom exp) (car val))
 		((NULL var) val)
 		((and (atom (car exp)) (> (countNum var) (getIndex var (car exp))))
 			(cons (getElement val (getIndex var (car exp))) (subs var (cdr exp) val)))
