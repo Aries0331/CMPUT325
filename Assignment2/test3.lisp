@@ -23,9 +23,7 @@
         (((f (f 2)) ( (f X =  (* X X)))) 16)
         (((a (+ 1 2)) ( (a X = (+ X 1)))) 4)
         (((b (+ 1 2)) ( (b X = (+ X 1)))) 4)
-
         (((reverse (1 2 3)) ( (reverse X =  (if (null X) nil (append (reverse (rest X)) (cons (first X) nil)))) (append X Y = (if (null X) Y (cons (first X) (append (rest X) Y)))))) (3 2 1))
-        
         (((fib 10) ((fib n = (if (< n 2) 1 (+ (fib (- n 1)) (fib (- n 2))))))) 89)
         (((f 1) ((f n = (cons n (2 3 4 5 6))))) (1 2 3 4 5 6))
         (((count (1 2 3)) ( (count L = (if (null L) 0 (+ 1 (count (rest L))))))) 3)

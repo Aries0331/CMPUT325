@@ -1,3 +1,4 @@
+(load "1461696.lisp")
 (print (if (eq (fl-interp '(+ 10 5) nil) '15) 'P1-OK 'P1-error))
 (print (if (eq (fl-interp '(- 12 8) nil) '4) 'P2-OK 'P2-error))
 (print (if (eq (fl-interp '(* 5 9) nil) '45) 'P3-OK 'P3-error))

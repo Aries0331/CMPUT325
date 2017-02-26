@@ -26,6 +26,7 @@ Example:
 (defun getBody (L)
 	(cond
 		((null L) NIL)
+		;((and (eq '= (car L)) (null (cddr L))) (cdr L))
 		((eq '= (car L)) (cadr L))
 		(t (getBody (cdr L)))
 	)
@@ -90,6 +91,8 @@ Example:
 (defun subs (var exp val)
 	(cond
 		((NULL exp) exp)
+		((atom exp) exp)
+		((NULL var) val)
 		((and (atom (car exp)) (> (countNum var) (getIndex var (car exp))))
 			(cons (getElement val (getIndex var (car exp))) (subs var (cdr exp) val)))
 		((atom (car exp)) (cons (car exp) (subs var (cdr exp) val)))
