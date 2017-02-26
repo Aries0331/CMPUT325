@@ -27,14 +27,14 @@
         (((fib 10) ((fib n = (if (< n 2) 1 (+ (fib (- n 1)) (fib (- n 2))))))) 89)
         (((f 1) ((f n = (cons n (2 3 4 5 6))))) (1 2 3 4 5 6))
         (((count (1 2 3)) ( (count L = (if (null L) 0 (+ 1 (count (rest L))))))) 3)
-
         (((f (g 2) (g 1)) ( (f X Y = (+ X Y)) (g X = (+ 1 X)))) 5)
-        
         (((f) ((f = 5))) 5)
         (((and 1 2) nil) t)
         (((and nil 2) nil) nil)
         (((or nil 2) nil) t)
+
         (((+ (f 1) (f 1 2)) ((f x = x) (f x y = (+ x y)))) 4)
+        
         ; The following two should not terminate under applicative order reduction
         ;(((f 0 (g 1)) ((g X = (+ X (g (+ X 1)))) (f X Y = (if (eq X 0) 0 Y)))) 0)
         ;(((h (g 5)) ((g X = (g (g X))) (h X = a))) a)
