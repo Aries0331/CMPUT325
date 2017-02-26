@@ -126,6 +126,7 @@ Example:
 (defun isUD (f UD)
 	(cond
 		((NULL UD) NIL)
+		((and (eq f (caar UD)) (not (null (cdar UD)))) UD)
 		((eq f (caar UD)) (car UD))
 		;((and (eq f (caar UD)) (eq (countArg f) (countArg (car UD)))) (car UD))
 		(t (isUD f (cdr UD)))
@@ -168,7 +169,7 @@ The main interpreter function
                 ;             (applicative order reduction) 
                 ; .....
 
-                ((isUD f P) (fl-interp (subs (getVar (cdar P)) (getBody (cdar P)) arg) P))
+                ((isUD f P) (fl-interp (subs (getVar (cdar (isUD f P))) (getBody (cdar (isUD f P))) arg) P))
 
                 ; otherwise f is undefined; in this case,
                 ; E is returned as if it is quoted in lisp
