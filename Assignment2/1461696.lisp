@@ -23,7 +23,7 @@ The main interpreter function
                 ((eq f 'rest)  (cdr (fl-interp (car arg) P))) 
 	        	((eq f 'cons)  (cons (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f 'equal)  (equal (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
-	        	((eq f 'number)  (numberp (fl-interp (car arg) P)))
+	        	((eq f 'isnumber)  (numberp (fl-interp (car arg) P)))
 	        	((eq f '+)  (+ (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f '-)  (- (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
 	        	((eq f '*)  (* (fl-interp (car arg) P) (fl-interp (cadr arg) P)))
@@ -41,49 +41,44 @@ The main interpreter function
                 ;             (applicative order reduction) 
                 ; .....
 
-                ((isUD f P) (applyf arg (cdr (isUD f P)) NIL NIL P))
+                ((isUD f P) (fl-interp (subs (getVar (cdar P)) (getBody (cdar P)) arg) nil))
 
                 ; otherwise f is undefined; in this case,
                 ; E is returned as if it is quoted in lisp
 
                 (t E)
+
                 )
 	      )
            )
         )
   )
 
-
-
 #|
-the function countArg get the number of parameters in the function
-Example: 
-(countArg '(f x = (+ x 2))) -> 1
-(countArg '(f x y = (+ x y))) -> 2
-|#
-(defun countArg (L)
-	(cond
-		((NULL (cdr L)) 0)
-		((equal '= (car L)) -1)
-		(t (+ 1 (countArg (cdr L))))
-	)
-)
-
-
-
-#|
-the function countNum counts the number of elements in the input list L
 Example:
-(countNum '(a b c)) -> 3
-(countNum '(a)) -> 1
+(getVar '(x y = (+ x y))) -> (x y)
+(getVar '(x = (* x x))) -> (x)
 |#
-(defun countNum (L)
-	(if (NULL L)
-		0
-		(+ 1 (countNum (cdr L)))
+(defun getVar (L)
+	(cond
+		((null L) NIL)
+		((eq '= (car L)) NIL)
+		(t (cons (car L) (getVar (cdr L))))
 	)
 )
 
+#|
+Example:
+(getBody '(x y = (+ x y))) -> (+ x y)
+(getBody '(x = (* x x))) -> (* x x)
+|#
+(defun getBody (L)
+	(cond
+		((null L) NIL)
+		((eq '= (car L)) (cadr L))
+		(t (getBody (cdr L)))
+	)
+)
 
 
 #|
@@ -122,25 +117,52 @@ Example:
 	)
 )
 
-
+#|
+the function countNum counts the number of elements in the input list L
+Example:
+(countNum '(a b c)) -> 3
+(countNum '(a)) -> 1
+|#
+(defun countNum (L)
+	(if (NULL L)
+		0
+		(+ 1 (countNum (cdr L)))
+	)
+)
 
 #|
 the function bind map the value to the variables respectively
 Example:
-(bind '(a b) '(+ a b) '(1 2)) -> (+ 1 2)
-(bind nil '(= 1 1) nil) -> (= 1 1)
+(subs '(a b) '(+ a b) '(1 2)) -> (+ 1 2)
+(subs nil '(= 1 1) nil) -> (= 1 1)
 |#
-(defun bind (n exp v)
+(defun subs (var exp val)
 	(cond
 		((NULL exp) exp)
-		((and (atom (car exp)) (> (countNum n) (getIndex n (car exp))))
-			(cons (getElement v (getIndex n (car exp))) (bind n (cdr exp) v)))
-		((atom (car exp)) (cons (car exp) (bind n (cdr exp) v)))
-		(t (cons (bind n (car exp) v) (bind n (cdr exp) v)))
+		((and (atom (car exp)) (> (countNum var) (getIndex var (car exp))))
+			(cons (getElement val (getIndex var (car exp))) (subs var (cdr exp) val)))
+		((atom (car exp)) (cons (car exp) (subs var (cdr exp) val)))
+		(t (cons (subs var (car exp) val) (subs var (cdr exp) val)))
 	)
+
 )
 
 
+
+
+#|
+the function countArg get the number of parameters in the function
+Example: 
+(countArg '(f x = (+ x 2))) -> 1
+(countArg '(f x y = (+ x y))) -> 2
+|#
+(defun countArg (L)
+	(cond
+		((NULL (cdr L)) 0)
+		((equal '= (car L)) -1)
+		(t (+ 1 (countArg (cdr L))))
+	)
+)
 
 #|
 the function isUD checks if the function is user defined or not
@@ -153,21 +175,14 @@ Example:
 (defun isUD (f UD)
 	(cond
 		((NULL UD) NIL)
-		((and (eq (car f) (caar UD)) (eq (countArg f) (countArg (car UD)))) (car UD))
+		((eq f (caar UD)) (car UD))
+		;((and (eq f (caar UD)) (eq (countArg f) (countArg (car UD)))) (car UD))
 		(t (isUD f (cdr UD)))
 	)
 )
 
 
 
-#|
-|#
-(defun applyf (arg f l1 l2 P)
-	(if (eq '= (car f))
-		(fl-interp (bind l2 (cadr f) l1) P)
-		(applyf (cdr arg) (cdr P) (append l1 (cons (fl-interp (car arg) P) NIL)) (append l2 (cons (car f) NIL)) P)
-	)
-)
 
 
 
