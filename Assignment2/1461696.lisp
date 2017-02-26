@@ -128,13 +128,13 @@ Example:
 (isUD '(add 1 2) '((add x y = (+ x y)))) -> (+ x y)
 (isUD '(add 1) '((add x y = (+ x y)))) -> nil
 |#
-(defun isUD (f UD)
+(defun isUD (f arg UD)
 	(cond
 		((NULL UD) NIL)
-		((and (eq f (caar UD)) (not (null (cdar UD)))) UD)
-		((eq f (caar UD)) (car UD))
+		((and (eq f (caar UD)) (not (null (cdar UD))) (eq (countNum arg) (countArg (car UD)))) UD)
+		;((and (eq f (caar UD)) (eq (countNum arg) (countArg (car UD)))) (car UD))
 		;((and (eq f (caar UD)) (eq (countArg f) (countArg (car UD)))) (car UD))
-		(t (isUD f (cdr UD)))
+		(t (isUD f arg (cdr UD)))
 	)
 )
 
@@ -174,7 +174,7 @@ The main interpreter function
                 ;             (applicative order reduction) 
                 ; .....
 
-                ((isUD f P) (fl-interp (subs (getVar (cdar (isUD f P))) (getBody (cdar (isUD f P))) arg) P))
+                ((isUD f arg P) (fl-interp (subs (getVar (cdar (isUD f arg P))) (getBody (cdar (isUD f arg P))) arg) P))
 
                 ; otherwise f is undefined; in this case,
                 ; E is returned as if it is quoted in lisp
