@@ -89,6 +89,8 @@ Example:
 #|
 the function subs map the value to the variables respectively
 just like substitue all the variable with their real value
+First find out the variable, then find the corresponding 
+position in the value list, then replace it
 Example:
 (subs '(a b) '(+ a b) '(1 2)) -> (+ 1 2)
 (subs nil '(= 1 1) nil) -> (= 1 1)
@@ -101,11 +103,13 @@ Example:
 		((and (atom exp) (null var)) exp)
 		((atom exp) (car val))
 		((NULL var) val)
-
+		; check if the variable is in the experssion
+		; if it is, replace it with the true value
 		((and (atom (car exp)) (> (countNum var) (getIndex var (car exp))))
 			(cons (getElement val (getIndex var (car exp))) (subs var (cdr exp) val)))
+		; if not, pass and keep check next one
 		((atom (car exp)) (cons (car exp) (subs var (cdr exp) val)))
-
+		; if it is a nested list, go deeper
 		(t (cons (subs var (car exp) val) (subs var (cdr exp) val)))
 	)
 
