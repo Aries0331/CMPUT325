@@ -9,3 +9,9 @@ xreverse([F|R], T) :- xreverse(R, RevR), append(RevR, [F], T).
 
 xunique([],[]).
 xunique([F|R], [F|L]) :- delete(R, F, T), xunique(T, L).
+
+xdiff([], [], []).
+xdiff(L1, L2, L) :- subtract(L1, L2, L), xunique(L, L).
+
+removeLast([X], [], X).
+removeLast([F|R], [F|L], Last) :- removeLast(R, L, Last). 
