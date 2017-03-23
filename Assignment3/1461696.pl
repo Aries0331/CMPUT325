@@ -27,6 +27,8 @@ xreverse([F|R], T) :- xreverse(R, RevR) , append(RevR, [F], T).
 % the bulit in delete predicate will delete all the element F from the list R
 % not only the first appear in R but all of them
 % so we can get a list T with all F removed 
+% but at the same time, we force to add the first element of L to the beginning of the result
+% so we can make sure there will be an element remain with all other duplicates removed
 
 xunique([],[]).
 xunique([F|R], [F|L]) :- delete(R, F, T) , xunique(T, L).
@@ -56,6 +58,7 @@ xdiff(L1, L2, Res) :- subtract(L1, L2, L) , xunique(L, Res).
 removeLast([X], [], X).
 removeLast([F|R], [F|L], Last) :- removeLast(R, L, Last). 
 
+/*
 node(a).
 node(b).
 node(c).
@@ -67,6 +70,8 @@ edge(b,c).
 edge(c,a).
 edge(d,a).
 edge(a,e).
+*/
+
 
 % Q5 
 
@@ -87,7 +92,7 @@ allConnected([A|L]) :- connect(A, L), allConnected(L).
 % 5.2 maxclique
 % maxclique(+N, -Cliques) to compute all the maximal cliques of size N that are contained in a given graph
 
-%%% clique(L) and xsubset are defined in elcass
+%%% clique(L), xsubset and xappend are defined in elcass
 
 clique(L) :- findall(X,node(X),Nodes), xsubset(L,Nodes), allConnected(L).
 
