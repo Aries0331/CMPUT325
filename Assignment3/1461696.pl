@@ -24,7 +24,9 @@ xreverse([F|R], T) :- xreverse(R, RevR) , append(RevR, [F], T).
 % O can be either a variable or a given list. 
 % The elements of O should be in the order in which they first appear in L.
 
-%
+% the bulit in delete predicate will delete all the element F from the list R
+% not only the first appear in R but all of them
+% so we can get a list T with all F removed 
 
 xunique([],[]).
 xunique([F|R], [F|L]) :- delete(R, F, T) , xunique(T, L).
@@ -49,7 +51,7 @@ xdiff(L1, L2, Res) :- subtract(L1, L2, L) , xunique(L, Res).
 % and Last is that last element. L1 and Last can be either variables or given values.
 
 % the base case is the last element of a list with one element is the element it self
-%  
+% removeLast keeps calling removeLast on rest of list
 
 removeLast([X], [], X).
 removeLast([F|R], [F|L], Last) :- removeLast(R, L, Last). 
@@ -85,6 +87,8 @@ allConnected([A|L]) :- connect(A, L), allConnected(L).
 % 5.2 maxclique
 % maxclique(+N, -Cliques) to compute all the maximal cliques of size N that are contained in a given graph
 
+%%% clique(L) and xsubset are defined in elcass
+
 clique(L) :- findall(X,node(X),Nodes), xsubset(L,Nodes), allConnected(L).
 
 xsubset([], _).
@@ -93,14 +97,25 @@ xsubset([X|Xs], Set) :- xappend(_, [X|Set1], Set), xsubset(Xs, Set1).
 xappend([], L, L).
 xappend([H|T], L, [H|R]) :- xappend(T, L, R).
 
+%%%
 
-cliqueflitter(X, N) :- clique(X), length(X, N).
+% selector is used to choose cliques with certain length N
+% the result L should be a clique first and also with length N
+selector(L, N) :- clique(L), length(L, N).
 
-xmaxclique(N, Cluques) :-  findall(Y, cliqueflitter(Y, N), Cluques).
+% find is used to find all cliques with certain length N from a list of clique
+% every single Y is satisfy with the condition that they are length N and is a connected
+find(N, Clique) :-  findall(Y, selector(Y, N), Clique).
 
-nonmax(N, Cliques) :- clique(Cliques), length(Cliques, N), cliqueflitter(Larger, K), K > N, xsubset(Cliques, Larger).
+% filter get those cliques with length N 
+% also there exists a large clique which contains all the element in clique  
+% super clique should have length large than given one 
+% and the given one should be a subset of super one
+filter(N, Cliques) :- clique(Cliques), length(Cliques, N), selector(Superset, K), K > N, xsubset(Cliques, Superset).
 
-xremove([],X,X).
-xremove([H|T], L, L2) :- delete(L, H, L1), xremove(T, L1, L2).
-
-maxclique(N, Clique) :- findall(X, nonmax(N, X), Nonlist), xmaxclique(N, Candidates), xremove(Nonlist, Candidates, Clique).
+% finally we we define maxclique
+% first we find all the cliques with length N and have "super" clique 
+% and store in RemoveList since they will later be removed from other list
+% then we find all cliques with length N as required and store them in Candidates list
+% finally we remove all the cliques in RemoveList from Candidates
+maxclique(N, Clique) :- findall(X, filter(N, X), RemoveList), find(N, Candidates), xdiff(Candidates, RemoveList, Clique).
