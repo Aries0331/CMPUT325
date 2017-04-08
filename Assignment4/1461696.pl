@@ -7,6 +7,11 @@
 % On backtracking, fourSquares should return all possible answers 
 % since there may be more than one solution
 
+% first, all the result should within the range of 0 and N
+% a value greater than N will not make its suqare equal to N
+% then we should satisfy the constrain that the sum of square equal to N
+% Also require the values in ascending order
+
 fourSquares(N, [S1, S2, S3, S4]) :- 
 	Vars = [S1, S2, S3, S4],
 	Vars ins 0..N,
@@ -23,6 +28,18 @@ fourSquares(N, [S1, S2, S3, S4]) :-
 % the total strength of one month's dismantlement is less than or equal to 
 % the total strength of next month's dismantlement
 % If there is no solution, then the program should return false
+
+% By solving the problem, I define a sub-prefix to help
+% Since we need the dismantlement in an ascending order, 
+% it is necessarily to store the previous choice, ie Pre in subdisarm.
+% Since we have different choices that can choose from Adivisions and Bdivisions alternatively,
+% I define two prefix, they are almost the same 
+% except for the number of vars choose from different divisions.
+% Use select to choose from divisions also delete it after selection
+% the sum of two vars from the same division should be 
+% the value of another var from the other division.
+% Keep doing these alternatively until get empty list
+% Append the result to final result
 
 disarm(Adivisions, Bdivisions, Solution) :- subdisarm(Adivisions, Bdivisions, Solution, 0).
 subdisarm([],[],[],_).
