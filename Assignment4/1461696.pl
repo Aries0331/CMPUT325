@@ -57,15 +57,15 @@ subdisarm(Adivisions, Bdivisions, Solution, Pre) :-
 
 subdisarm(Adivisions, Bdivisions, Solution, Pre) :-
 	Vars = [A, B1, B2],
-	select(B1, Adivisions, Temp),
+	select(B1, Bdivisions, Temp),
 	select(B2, Temp, ResultB),
-	select(A, Bdivisions, ResultA),
+	select(A, Adivisions, ResultA),
 	B1 #=< B2,
 	B1+B2 #= A,
 	A #>= Pre,
 	subdisarm(ResultA, ResultB, Subsolution, A), !,
 	label(Vars),
-	append([[[B1, B2], [A]]], Subsolution, Solution).
+	append([[[A], [B1, B2]]], Subsolution, Solution).
 
 
 
